@@ -48,11 +48,25 @@ ipcMain.on('download-video', (event, url) => {
   const { spawn } = require('child_process');
   const path = require('path');
   const fs = require('fs');
+  const { app } = require('electron');
 
-  // Crear directorio de descargas si no existe
-  const downloadDir = path.join(process.cwd(), 'downloads');
+  // Obtener la ruta de la carpeta de descargas del sistema
+  const userDownloadsPath = app.getPath('videos');
+  const downloadDir = path.join(userDownloadsPath, 'freetube');
+  
+  // Crear el directorio freetube si no existe
   if (!fs.existsSync(downloadDir)) {
-    fs.mkdirSync(downloadDir, { recursive: true });
+    try {
+      fs.mkdirSync(downloadDir, { recursive: true });
+      console.log(`Directorio de descargas creado en: ${downloadDir}`);
+    } catch (err) {
+      console.error('Error al crear el directorio de descargas:', err);
+      // Si falla, usar la carpeta de descargas directamente
+      return event.reply('download-status', {
+        success: false,
+        message: '❌ No se pudo crear el directorio freetube en Descargas. Verifica los permisos.'
+      });
+    }
   }
 
   // Configuración básica de yt-dlp
