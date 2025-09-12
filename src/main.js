@@ -51,9 +51,12 @@ ipcMain.on('download-video', (event, url) => {
   const args = [
     '--no-playlist',
     '-f',
-    'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
+    'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]',
     '--merge-output-format',
     'mp4',
+    '--embed-metadata',
+    '--embed-thumbnail',
+    '--audio-quality', '0',
     '-o',
     '%(title)s.%(ext)s',
     url
