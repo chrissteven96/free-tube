@@ -44,7 +44,10 @@ const createWindow = () => {
 //   });
 // });
 
-ipcMain.on('download-video', (event, url) => {
+ipcMain.on('download-video', (event, { url, quality }) => {
+  console.log('Recibida solicitud de descarga:');
+  console.log('URL:', url);
+  console.log('Calidad:', quality);
   const { spawn } = require('child_process');
   const path = require('path');
   const fs = require('fs');
@@ -70,9 +73,28 @@ ipcMain.on('download-video', (event, url) => {
   }
 
   // Configuración básica de yt-dlp
+
+  // Configurar el formato según la calidad seleccionada
+  let format = '';
+  console.log('Calidad seleccionada:', quality);
+  const resolution = quality.toString();
+  if (quality === 'best') {
+    format = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]';
+  } else if (quality === 'worst') {
+    format = 'worstvideo[ext=mp4]+worstaudio[ext=m4a]/worst[ext=mp4]';
+  } else if (['1080', '720', '480'].includes(resolution)) {
+    format = `bestvideo[height<=${resolution}][ext=mp4]+bestaudio[ext=m4a]/best[height<=${resolution}][ext=mp4]`;
+  } else {
+    // Por defecto, mejor calidad
+    format = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]';
+  }
+
+  console.log(`Descargando en calidad: ${resolution}`);
+  console.log(`Formato seleccionado: ${format}`);
+
   const args = [
     '--no-playlist',
-    '-f', 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]',
+    '-f', format,
     '--merge-output-format', 'mp4',
     '--newline',
     '--progress',
@@ -85,6 +107,7 @@ ipcMain.on('download-video', (event, url) => {
   ];
 
   console.log('Ejecutando yt-dlp con argumentos:', args.join(' '));
+
   
   // Notificar inicio de la descarga
   event.reply('download-status', {
@@ -98,6 +121,8 @@ ipcMain.on('download-video', (event, url) => {
   downloadProcess.stdout.on('data', (data) => {
     const output = data.toString();
     console.log('yt-dlp:', output);
+    console.log('URL recibida:', url);
+    console.log('Calidad recibida:', resolution);
     
     // Buscar progreso en la salida
     const progressMatch = output.match(/\[download\]\s+(\d+\.?\d*)%/);

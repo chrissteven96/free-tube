@@ -6,11 +6,15 @@ function Interface() {
   const [status, setStatus] = useState("");
   const [progress, setProgress] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [quality, setQuality] = useState("best");
 
   // Configurar el listener una sola vez al montar el componente
   useEffect(() => {
     const handleStatus = (data) => {
       console.log('Estado recibido:', data);
+
+      
+
       
       if (data.message) {
         setStatus(data.message);
@@ -27,6 +31,7 @@ function Interface() {
         setIsDownloading(true);
       }
     };
+
 
     // Configurar el listener
     const cleanup = window.electron.receive("download-status", handleStatus);
@@ -50,12 +55,19 @@ function Interface() {
     setStatus("⏳ Iniciando descarga...");
     
     try {
-      window.electron.send("download-video", url);
+      console.log('Enviando descarga con calidad:', quality);
+      window.electron.send("download-video", { url, quality });
     } catch (error) {
       console.error('Error al iniciar la descarga:', error);
       setStatus("❌ Error al iniciar la descarga");
       setIsDownloading(false);
     }
+  };
+
+  const handleQualityChange = (event) => {
+    const newQuality = event.target.value;
+    setQuality(newQuality);
+    console.log('Calidad seleccionada:', newQuality);
   };
 
   return (
@@ -75,6 +87,14 @@ function Interface() {
           autoComplete="off"
           disabled={isDownloading}
         />
+
+        <select value={quality} name="quality" id="quality" onChange={handleQualityChange}>
+          <option value="best">Mejor (4k)</option>
+          <option value="1080">1080p</option>
+          <option value="720">720p</option>
+          <option value="480">480p</option>
+          <option value="worst">Worst (360p)</option>
+        </select>
         
         <button 
           onClick={handleDownload}
