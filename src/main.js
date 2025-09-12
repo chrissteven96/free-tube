@@ -3,7 +3,8 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 
-import { exec } from 'child_process';
+// import { exec } from 'child_process';
+
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -33,15 +34,62 @@ const createWindow = () => {
   mainWindow.webContents.openDevTools();
 };
 
+// ipcMain.on('download-video', (event, url) => {
+//   exec(`yt-dlp --no-playlist -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]" --merge-output-format mp4 -o "%(title)s.%(ext)s" ${url}`, (error, stdout, stderr) => {
+//     if (error) {
+//       event.reply('download-status', { success: false, message: stderr });
+//     } else {
+//       event.reply('download-status', { success: true, message: '✅ Descarga completa' });
+//     }
+//   });
+// });
+
 ipcMain.on('download-video', (event, url) => {
-  exec(`yt-dlp -o "%(title)s.%(ext)s" ${url}`, (error, stdout, stderr) => {
-    if (error) {
-      event.reply('download-status', { success: false, message: stderr });
-    } else {
-      event.reply('download-status', { success: true, message: '✅ Descarga completa' });
+  const { spawn } = require('child_process');
+
+  // Estos son los argumentos que quieres pasarle a yt-dlp
+  const args = [
+    '--no-playlist',
+    '-f',
+    'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
+    '--merge-output-format',
+    'mp4',
+    '-o',
+    '%(title)s.%(ext)s',
+    url
+  ];
+
+  console.log('Ejecutando comando: yt-dlp', args.join(' '));
+
+  // Usamos spawn para ejecutar yt-dlp con los argumentos en un array
+  const downloadProcess = spawn('yt-dlp', args);
+
+  downloadProcess.stdout.on('data', (data) => {
+    console.log(`Salida de yt-dlp: ${data}`);
+  });
+
+  downloadProcess.stderr.on('data', (data) => {
+    console.error(`Error de yt-dlp: ${data}`);
+  });
+
+  downloadProcess.on('close', (code) => {
+    if (code !== 0) {
+      console.error(`Proceso de yt-dlp finalizado con código ${code}`);
+      event.reply('download-status', {
+        success: false,
+        message: `❌ Error en la descarga. Código: ${code}`
+      });
+      return;
     }
+
+    console.log('Descarga completada');
+    event.reply('download-status', {
+      success: true,
+      message: '✅ Descarga completada correctamente'
+    });
   });
 });
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
