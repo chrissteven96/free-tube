@@ -46,49 +46,93 @@ const createWindow = () => {
 
 ipcMain.on('download-video', (event, url) => {
   const { spawn } = require('child_process');
+  const path = require('path');
+  const fs = require('fs');
 
-  // Estos son los argumentos que quieres pasarle a yt-dlp
+  // Crear directorio de descargas si no existe
+  const downloadDir = path.join(process.cwd(), 'downloads');
+  if (!fs.existsSync(downloadDir)) {
+    fs.mkdirSync(downloadDir, { recursive: true });
+  }
+
+  // Configuración básica de yt-dlp
   const args = [
     '--no-playlist',
-    '-f',
-    'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]',
-    '--merge-output-format',
-    'mp4',
+    '-f', 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]',
+    '--merge-output-format', 'mp4',
+    '--newline',
+    '--progress',
     '--embed-metadata',
     '--embed-thumbnail',
     '--audio-quality', '0',
-    '-o',
-    '%(title)s.%(ext)s',
+    '--output', path.join(downloadDir, '%(title)s.%(ext)s'),
+    '--no-mtime',
     url
   ];
 
-  console.log('Ejecutando comando: yt-dlp', args.join(' '));
+  console.log('Ejecutando yt-dlp con argumentos:', args.join(' '));
+  
+  // Notificar inicio de la descarga
+  event.reply('download-status', {
+    message: '⏳ Preparando la descarga...',
+    progress: 0
+  });
 
-  // Usamos spawn para ejecutar yt-dlp con los argumentos en un array
   const downloadProcess = spawn('yt-dlp', args);
 
+  // Manejar salida estándar
   downloadProcess.stdout.on('data', (data) => {
-    console.log(`Salida de yt-dlp: ${data}`);
+    const output = data.toString();
+    console.log('yt-dlp:', output);
+    
+    // Buscar progreso en la salida
+    const progressMatch = output.match(/\[download\]\s+(\d+\.?\d*)%/);
+    if (progressMatch && progressMatch[1]) {
+      const progress = parseFloat(progressMatch[1]);
+      event.reply('download-status', {
+        progress: progress,
+        message: `⏳ Descargando... ${progress.toFixed(0)}%`
+      });
+    }
   });
 
+  // Manejar errores
   downloadProcess.stderr.on('data', (data) => {
-    console.error(`Error de yt-dlp: ${data}`);
+    const error = data.toString();
+    console.error('Error:', error);
+    
+    // Filtrar mensajes de progreso
+    if (!error.includes('[download]') && !error.includes('[info]')) {
+      event.reply('download-status', {
+        message: `⚠️ ${error.trim()}`
+      });
+    }
   });
 
+  // Manejar cierre del proceso
   downloadProcess.on('close', (code) => {
-    if (code !== 0) {
-      console.error(`Proceso de yt-dlp finalizado con código ${code}`);
+    console.log(`Proceso finalizado con código ${code}`);
+    
+    if (code === 0) {
+      event.reply('download-status', {
+        success: true,
+        progress: 100,
+        message: '✅ Descarga completada correctamente'
+      });
+    } else {
       event.reply('download-status', {
         success: false,
-        message: `❌ Error en la descarga. Código: ${code}`
+        message: `❌ Error en la descarga (código ${code}). Intenta de nuevo.`
       });
-      return;
     }
+  });
 
-    console.log('Descarga completada');
+  // Manejar errores del proceso
+  downloadProcess.on('error', (err) => {
+    console.error('Error al ejecutar yt-dlp:', err);
     event.reply('download-status', {
-      success: true,
-      message: '✅ Descarga completada correctamente'
+      success: false,
+      message: `❌ Error al ejecutar yt-dlp: ${err.message}`
     });
   });
 });
