@@ -17,6 +17,8 @@ const createWindow = () => {
     height: 700,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
     },
   });
 
@@ -30,6 +32,16 @@ const createWindow = () => {
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 };
+
+ipcMain.on('download-video', (event, url) => {
+  exec(`yt-dlp -o "%(title)s.%(ext)s" ${url}`, (error, stdout, stderr) => {
+    if (error) {
+      event.reply('download-status', { success: false, message: stderr });
+    } else {
+      event.reply('download-status', { success: true, message: '✅ Descarga completa' });
+    }
+  });
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

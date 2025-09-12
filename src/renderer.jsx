@@ -1,12 +1,12 @@
 
 import { createRoot } from 'react-dom/client';
-import Profile from './components/profile';
+import Interface from './components/interface'
 
 const App = () => {
 
     return (
       <>
-        <Profile />
+     <Interface />
       </>
     );
     
