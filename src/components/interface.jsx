@@ -102,12 +102,11 @@ function Interface() {
           disabled={isDownloading}
         />
 
-        
-        <p className={styles.success}>✅</p>
+        {url && <p className={styles.success}>✅</p>}
         
 
 </div>
-<div>
+<div className={styles.selectGroup}>
         <select value={quality} name="quality" id="quality" onChange={handleQualityChange} disabled={isDownloading} className={styles.select}>
           <option value="best">Mejor (4k)</option>
           <option value="1080">1080p</option>
