@@ -70,6 +70,18 @@ function Interface() {
     console.log('Calidad seleccionada:', newQuality);
   };
 
+  const handlePaste = async () => {
+    try {
+      const pastedText = await navigator.clipboard.readText();
+      setUrl(pastedText);
+      console.log('URL pegada:', pastedText);
+      // setStatus('✅ URL pegada correctamente');
+    } catch (error) {
+      console.error('Error al leer el portapapeles:', error);
+      setStatus('❌ No se pudo acceder al portapapeles');
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.logoContainer}>
@@ -79,7 +91,9 @@ function Interface() {
       <h1>Free <span className={styles.span1}>Tube</span>  <span className={styles.span2}> by Chris</span> </h1>
       
       <div className={styles.inputGroup}>
+      <button onClick={handlePaste} disabled={isDownloading} className={styles.buttonPaste}  >Pegar 👉</button>
         <input 
+           
           type="text"
           value={url} 
           onChange={(e) => setUrl(e.target.value)} 
@@ -88,7 +102,13 @@ function Interface() {
           disabled={isDownloading}
         />
 
-        <select value={quality} name="quality" id="quality" onChange={handleQualityChange}>
+        
+        <p className={styles.success}>✅</p>
+        
+
+</div>
+<div>
+        <select value={quality} name="quality" id="quality" onChange={handleQualityChange} disabled={isDownloading} className={styles.select}>
           <option value="best">Mejor (4k)</option>
           <option value="1080">1080p</option>
           <option value="720">720p</option>
