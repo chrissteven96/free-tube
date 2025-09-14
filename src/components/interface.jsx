@@ -7,6 +7,7 @@ function Interface() {
   const [progress, setProgress] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
   const [quality, setQuality] = useState("best");
+  const [downloadOpen, setDownloadOpen] = useState(false);
 
   // Configurar el listener una sola vez al montar el componente
   useEffect(() => {
@@ -82,6 +83,16 @@ function Interface() {
     }
   };
 
+  const handleOpenFolder = () => {
+    try {
+      window.electron.openDownloadFolder();
+      console.log('Solicitando abrir carpeta de descargas...');
+    } catch (error) {
+      console.error('Error al abrir la carpeta:', error);
+      setStatus('❌ No se pudo abrir la carpeta de descargas');
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.logoContainer}>
@@ -112,7 +123,7 @@ function Interface() {
           <option value="1080">1080p</option>
           <option value="720">720p</option>
           <option value="480">480p</option>
-          <option value="worst">Worst (360p)</option>
+          <option value="worst">Peor (360p)</option>
         </select>
         
         <button 
@@ -120,7 +131,10 @@ function Interface() {
           disabled={isDownloading || !url.trim()}
           className={isDownloading ? styles.downloading : ''}
         >
-          {isDownloading ? 'Descargando...' : 'Descargar'}
+          {isDownloading ? 'Descargando...' : 'Descargar ⬇️​'}
+        </button>
+        <button   onClick={handleOpenFolder} disabled={isDownloading} className={styles.openFolderButton}>
+          Abrir carpeta 📂
         </button>
       </div>
       

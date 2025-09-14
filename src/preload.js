@@ -11,6 +11,10 @@ contextBridge.exposeInMainWorld('electron', {
     }
   },
   
+  openDownloadFolder: () => {
+    ipcRenderer.send('open-download-folder');
+  },
+  
   receive: (channel, func) => {
     const validChannels = ['download-status'];
     if (validChannels.includes(channel)) {

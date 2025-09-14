@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
@@ -57,6 +57,7 @@ ipcMain.on('download-video', (event, { url, quality }) => {
   const userDownloadsPath = app.getPath('videos');
   const downloadDir = path.join(userDownloadsPath, 'freetube');
   
+
   // Crear el directorio freetube si no existe
   if (!fs.existsSync(downloadDir)) {
     try {
@@ -72,6 +73,8 @@ ipcMain.on('download-video', (event, { url, quality }) => {
     }
   }
 
+  // Removed auto-opening folder here to prevent it from opening on every download
+   
   // Configuración básica de yt-dlp
 
   // Configurar el formato según la calidad seleccionada
@@ -135,6 +138,8 @@ ipcMain.on('download-video', (event, { url, quality }) => {
     }
   });
 
+
+
   // Manejar errores
   downloadProcess.stderr.on('data', (data) => {
     const error = data.toString();
@@ -177,6 +182,7 @@ ipcMain.on('download-video', (event, { url, quality }) => {
 });
 
 
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -195,6 +201,49 @@ app.whenReady().then(() => {
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
+// Handle opening the download folder
+ipcMain.on('open-download-folder', () => {
+  try {
+    const userDownloadsPath = app.getPath('videos');
+    console.log('Ruta de videos del sistema:', userDownloadsPath);
+    
+    const downloadDir = path.join(userDownloadsPath, 'freetube');
+    console.log('Intentando abrir carpeta:', downloadDir);
+    
+    // Verificar si el directorio existe
+    const fs = require('fs');
+    if (!fs.existsSync(downloadDir)) {
+      console.log('La carpeta no existe, intentando crearla...');
+      try {
+        fs.mkdirSync(downloadDir, { recursive: true });
+        console.log('Carpeta creada exitosamente');
+      } catch (mkdirErr) {
+        console.error('Error al crear la carpeta:', mkdirErr);
+        return;
+      }
+    }
+    
+    // Verificar permisos
+    try {
+      fs.accessSync(downloadDir, fs.constants.R_OK | fs.constants.W_OK);
+      console.log('Tiene permisos de lectura/escritura en la carpeta');
+    } catch (accessErr) {
+      console.error('Error de permisos en la carpeta:', accessErr);
+      return;
+    }
+    
+    // Intentar abrir la carpeta
+    shell.openPath(downloadDir).then(() => {
+      console.log('Carpeta abierta exitosamente');
+    }).catch(err => {
+      console.error('Error al abrir la carpeta:', err);
+    });
+    
+  } catch (error) {
+    console.error('Error inesperado al abrir la carpeta:', error);
+  }
+});
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
