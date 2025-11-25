@@ -82,14 +82,14 @@ ipcMain.on('download-video', (event, { url, quality }) => {
   console.log('Calidad seleccionada:', quality);
   const resolution = quality.toString();
   if (quality === 'best') {
-    format = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]';
+    format = 'bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[ext=mp4][vcodec^=avc1]';
   } else if (quality === 'worst') {
-    format = 'worstvideo[ext=mp4]+worstaudio[ext=m4a]/worst[ext=mp4]';
+    format = 'worstvideo[ext=mp4][vcodec^=avc1]+worstaudio[ext=m4a]/worst[ext=mp4][vcodec^=avc1]';
   } else if (['1080', '720', '480'].includes(resolution)) {
-    format = `bestvideo[height<=${resolution}][ext=mp4]+bestaudio[ext=m4a]/best[height<=${resolution}][ext=mp4]`;
+    format = `bestvideo[height<=${resolution}][ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[height<=${resolution}][ext=mp4][vcodec^=avc1]`;
   } else {
     // Por defecto, mejor calidad
-    format = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]';
+    format = 'bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[ext=mp4][vcodec^=avc1]';
   }
 
   console.log(`Descargando en calidad: ${resolution}`);
@@ -103,6 +103,7 @@ ipcMain.on('download-video', (event, { url, quality }) => {
     '--progress',
     '--embed-metadata',
     '--embed-thumbnail',
+    '--restrict-filenames',
     '--audio-quality', '0',
     '--output', path.join(downloadDir, '%(title)s.%(ext)s'),
     '--no-mtime',
