@@ -78,17 +78,22 @@ ipcMain.on('download-video', (event, { url, quality }) => {
   // Configuración básica de yt-dlp
 
   // Configurar el formato según la calidad seleccionada
-  let format = '';
   console.log('Calidad seleccionada:', quality);
+  const isAudioOnly = quality === 'audio';
+  let format = '';
   const resolution = quality.toString();
-  if (quality === 'best') {
+
+  if (isAudioOnly) {
+    // Solo audio: dejar que yt-dlp escoja el mejor audio disponible
+    format = 'bestaudio/best';
+  } else if (quality === 'best') {
     format = 'bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[ext=mp4][vcodec^=avc1]';
   } else if (quality === 'worst') {
     format = 'worstvideo[ext=mp4][vcodec^=avc1]+worstaudio[ext=m4a]/worst[ext=mp4][vcodec^=avc1]';
   } else if (['1080', '720', '480'].includes(resolution)) {
     format = `bestvideo[height<=${resolution}][ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[height<=${resolution}][ext=mp4][vcodec^=avc1]`;
   } else {
-    // Por defecto, mejor calidad
+    // Por defecto, mejor calidad de video
     format = 'bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/best[ext=mp4][vcodec^=avc1]';
   }
 
@@ -98,17 +103,24 @@ ipcMain.on('download-video', (event, { url, quality }) => {
   const args = [
     '--no-playlist',
     '-f', format,
-    '--merge-output-format', 'mp4',
     '--newline',
     '--progress',
     '--embed-metadata',
-    '--embed-thumbnail',
     '--restrict-filenames',
     '--audio-quality', '0',
     '--output', path.join(downloadDir, '%(title)s.%(ext)s'),
     '--no-mtime',
     url
   ];
+
+  if (isAudioOnly) {
+    // Extraer solo audio en MP3
+    args.push('--extract-audio', '--audio-format', 'mp3');
+  } else {
+    // Modo video: fusionar en MP4 y embeber miniatura
+    args.splice(3, 0, '--merge-output-format', 'mp4');
+    args.splice(7, 0, '--embed-thumbnail');
+  }
 
   console.log('Ejecutando yt-dlp con argumentos:', args.join(' '));
 
@@ -133,8 +145,7 @@ ipcMain.on('download-video', (event, { url, quality }) => {
     if (progressMatch && progressMatch[1]) {
       const progress = parseFloat(progressMatch[1]);
       event.reply('download-status', {
-        progress: progress,
-        message: `⏳ Descargando... ${progress.toFixed(0)}%`
+        progress: progress
       });
     }
   });
@@ -145,13 +156,7 @@ ipcMain.on('download-video', (event, { url, quality }) => {
   downloadProcess.stderr.on('data', (data) => {
     const error = data.toString();
     console.error('Error:', error);
-    
-    // Filtrar mensajes de progreso
-    if (!error.includes('[download]') && !error.includes('[info]')) {
-      event.reply('download-status', {
-        message: `⚠️ ${error.trim()}`
-      });
-    }
+    // Mantener los mensajes de error solo en la consola para no mostrarlos al usuario
   });
 
   // Manejar cierre del proceso

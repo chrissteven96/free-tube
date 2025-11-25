@@ -13,23 +13,20 @@ function Interface() {
   useEffect(() => {
     const handleStatus = (data) => {
       console.log('Estado recibido:', data);
-
-      
-
-      
-      if (data.message) {
-        setStatus(data.message);
-      }
       
       if (data.progress !== undefined) {
         setProgress(data.progress);
       }
       
       if (data.success === true || data.success === false) {
+        // Solo mostrar mensaje final, ignorar mensajes intermedios o warnings
+        if (data.success) {
+          setStatus('✅ Descarga completada correctamente');
+          setProgress(100);
+        } else {
+          setStatus('❌ Error en la descarga. Intenta de nuevo.');
+        }
         setIsDownloading(false);
-        if (data.success) setProgress(100);
-      } else if (data.message && data.message.includes('Descargando')) {
-        setIsDownloading(true);
       }
     };
 
@@ -124,6 +121,7 @@ function Interface() {
           <option value="720">720p</option>
           <option value="480">480p</option>
           <option value="worst">Peor (360p)</option>
+          <option value="audio">Solo audio (MP3)</option>
         </select>
         
         <button 
