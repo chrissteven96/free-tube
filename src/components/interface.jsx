@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import styles from "./interface.module.css";
+import { FaPaste,FaDownload,FaRegFolderOpen  } from "react-icons/fa6";
+
+
 
 function Interface() {
   const [url, setUrl] = useState("");
@@ -103,7 +106,7 @@ function Interface() {
       
       
       <div className={styles.inputGroup}>
-      <button onClick={handlePaste} disabled={isDownloading} className={styles.buttonPaste}  >Pegar 👉</button>
+      <button onClick={handlePaste} disabled={isDownloading} className={styles.buttonPaste}  >Pegar <FaPaste /></button>
         <input 
            
           type="text"
@@ -133,10 +136,14 @@ function Interface() {
           disabled={isDownloading || !url.trim()}
           className={isDownloading ? styles.downloading : ''}
         >
-          {isDownloading ? 'Descargando...' : 'Descargar ⬇️​'}
+          {isDownloading ? 'Descargando...' : (
+            <>
+              Descargar <FaDownload />
+            </>
+          )}
         </button>
         <button   onClick={handleOpenFolder} disabled={isDownloading} className={styles.openFolderButton}>
-          Abrir carpeta 📂
+          Abrir carpeta <FaRegFolderOpen />
         </button>
       </div>
       
