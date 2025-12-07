@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.2" encoding="utf-8"?>
 <Package
    xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
    xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
@@ -11,7 +11,7 @@
     <DisplayName>${packageDisplayName}</DisplayName>
     <PublisherDisplayName>${publisherDisplayName}</PublisherDisplayName>
     <Description>No description entered</Description>
-    <Logo>assets\SampleAppx.50x50.png</Logo>
+    <Logo>assets\icon.png</Logo>
   </Properties>
   <Resources>
     <Resource Language="en-us" />
@@ -27,10 +27,10 @@
       <uap:VisualElements
        BackgroundColor="${packageBackgroundColor}"
        DisplayName="${packageDisplayName}"
-       Square150x150Logo="assets\SampleAppx.150x150.png"
-       Square44x44Logo="assets\SampleAppx.44x44.png"
+       Square150x150Logo="assets\icon.png"
+       Square44x44Logo="assets\icon.png"
        Description="${packageDescription}">
-        <uap:DefaultTile Wide310x150Logo="assets\SampleAppx.310x150.png" />
+        <uap:DefaultTile Wide310x150Logo="assets\icon.png" />
       </uap:VisualElements>
     </Application>
   </Applications>
