@@ -7,37 +7,42 @@
   margin: 0 auto;
   padding: 30px 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
+  background-color: transparent;
   border-radius: 20px;
 }
 
-.logoContainer {
-  margin: 0 auto;
+.heads {
   display: flex;
-  width: 20%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.logoContainer {
+  display: flex;
+  /* width: 20%; */
   justify-content: center;
   
   
 }
 .logo {
-width: 60px;
+width: 180px;
 height: auto;
-background-color: #d32f2f;
+/* background-color: #0E1623; */
 border-radius: 20px;
 padding: 1.2rem;
 
 }
 
 h1 {
-  text-align: center;
-  color: #333;
-  margin-top: 0;
-  margin-bottom: 0;
-  
+  text-align: start;
+  color: #E7542A;
 }
 
 .span1 {
-  background-color: #d32f2f;
+  background-color: #489ABB;
   color: #fff;
   padding: 8px;
   border-radius: 10px;
@@ -45,7 +50,6 @@ h1 {
 
 .span2 {
  margin-left: -12px;
-  color: #000000;
   padding: 8px;
   border-radius: 10px;
   font-size: 16px;

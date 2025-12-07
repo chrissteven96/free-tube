@@ -1,6 +1,6 @@
-
 import { createRoot } from 'react-dom/client';
 import Interface from './components/interface'
+import './index.css';
 
 const App = () => {
 

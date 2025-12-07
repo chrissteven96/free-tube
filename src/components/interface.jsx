@@ -92,11 +92,15 @@ function Interface() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.logoContainer}>
-      <img src="https://i.imgur.com/tMmOXe6.png" alt="" className={styles.logo}/>
+      <div className={styles.heads}>
+        <div className={styles.logoContainer}>
+      <img src="./assets/christotechColor.png" alt="" className={styles.logo}/>
       </div>
 
       <h1>Free <span className={styles.span1}>Tube</span>  <span className={styles.span2}> by Chris</span> </h1>
+
+      </div>
+      
       
       <div className={styles.inputGroup}>
       <button onClick={handlePaste} disabled={isDownloading} className={styles.buttonPaste}  >Pegar 👉</button>
