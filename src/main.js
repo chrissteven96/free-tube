@@ -12,10 +12,14 @@ if (started) {
 }
 
 const createWindow = () => {
+  // Ruta del icono basada en la ruta de la app (funciona en dev y empaquetado)
+  const iconPath = path.join(app.getAppPath(), 'assets', 'icon.ico');
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 700,
+    icon: iconPath,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

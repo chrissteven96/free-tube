@@ -4,6 +4,8 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
+    // Icon base path (without extension). Forge usará assets/icon.ico en Windows
+    icon: 'assets/icon',
   },
   rebuildConfig: {},
   makers: [

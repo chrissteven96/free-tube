@@ -97,7 +97,7 @@ function Interface() {
     <div className={styles.container}>
       <div className={styles.heads}>
         <div className={styles.logoContainer}>
-      <img src="./assets/christotechColor.png" alt="" className={styles.logo}/>
+      <img src="https://i.imgur.com/Q91Z2RI.png" alt="" className={styles.logo}/>
       </div>
 
       <h1>Free <span className={styles.span1}>Tube</span>  <span className={styles.span2}> by ChristoTech</span> </h1>
