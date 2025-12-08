@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import styles from "./interface.module.css";
-import { FaPaste,FaDownload,FaRegFolderOpen, FaFacebook, FaTiktok, FaInstagram, FaPaypal, FaUser  } from "react-icons/fa6";
+import { FaPaste,FaDownload,FaRegFolderOpen, FaFacebook, FaTiktok, FaUser  } from "react-icons/fa6";
 import { TbProgressDown } from "react-icons/tb";
-import { FaYoutube } from "react-icons/fa";
+import { FaCheckCircle, FaYoutube, FaClock } from "react-icons/fa";
 
 
 
@@ -162,7 +162,7 @@ function Interface() {
           disabled={isDownloading}
         />
 
-        {url && <p className={styles.success}>✅</p>}
+        {url && <FaCheckCircle className={styles.check} /> }
         
 
 </div>
@@ -209,8 +209,18 @@ function Interface() {
       )}
       
       {status && (
-        <p className={`${styles.status} ${status.includes('❌') ? styles.error : ''}`}>
-          {status}
+        <p className={`${styles.status} ${typeof status === 'string' && status.includes('❌') ? styles.error : ''}`}>
+          {status === '✅ Descarga completada correctamente' ? (
+            <>
+              <FaCheckCircle className={styles.check} /> Descarga completada correctamente
+            </>
+          ) : status.startsWith('⏳') ? (
+            <>
+              <FaClock className={styles.check} /> Iniciando descarga...
+            </>
+          ) : (
+            status
+          )}
         </p>
       )}
     </div>
