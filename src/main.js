@@ -38,6 +38,16 @@ const createWindow = () => {
   // mainWindow.webContents.openDevTools();
 };
 
+// Abrir URLs externas en el navegador por defecto
+ipcMain.on('open-external-url', (event, url) => {
+  if (!url) return;
+  try {
+    shell.openExternal(url);
+  } catch (err) {
+    console.error('Error abriendo URL externa:', url, err);
+  }
+});
+
 // ipcMain.on('download-video', (event, url) => {
 //   exec(`yt-dlp --no-playlist -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]" --merge-output-format mp4 -o "%(title)s.%(ext)s" ${url}`, (error, stdout, stderr) => {
 //     if (error) {

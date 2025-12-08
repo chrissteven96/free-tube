@@ -14,6 +14,10 @@ contextBridge.exposeInMainWorld('electron', {
   openDownloadFolder: () => {
     ipcRenderer.send('open-download-folder');
   },
+
+  openExternal: (url) => {
+    ipcRenderer.send('open-external-url', url);
+  },
   
   receive: (channel, func) => {
     const validChannels = ['download-status'];

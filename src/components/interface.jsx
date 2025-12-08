@@ -69,6 +69,19 @@ function Interface() {
     }
   };
 
+  const handleOpenExternal = (url) => (event) => {
+    event.preventDefault();
+    try {
+      if (window.electron && typeof window.electron.openExternal === 'function') {
+        window.electron.openExternal(url);
+      } else {
+        window.open(url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error al abrir enlace externo:', error);
+    }
+  };
+
   const handleQualityChange = (event) => {
     const newQuality = event.target.value;
     setQuality(newQuality);
@@ -110,29 +123,29 @@ function Interface() {
 
       <div className={styles.socialNet}>
 
-      <abbr title="YouTube">        <a href="https://www.youtube.com/@christotech96" target="_blank">
-          <FaYoutube className={styles.icono} />
-        </a></abbr>
-
-
-        <abbr title="Facebook">        <a  href="https://www.facebook.com/ChristoTech96/" target="_blank">
-                  <FaFacebook className={styles.icono}/>
-                </a></abbr>
-
-        <abbr title="Tiktok">        <a href="https://www.tiktok.com/@christotech96" target="_blank">
-                  <FaTiktok className={styles.icono}/>
-                </a></abbr>
-
-          <abbr title="Instagram">  <a href="https://www.instagram.com/christotech96/" target="_blank">
-                  <FaInstagram className={styles.icono}/>
-                </a>    
+        <abbr title="YouTube">
+          <a href="https://www.youtube.com/@christotech96" onClick={handleOpenExternal('https://www.youtube.com/@christotech96')}>
+            <FaYoutube className={styles.icono} />
+          </a>
         </abbr>
 
-        <abbr title="Mi página Web">  <a href="https://personal-portfolio-ten-flame.vercel.app/" target="_blank">
-                  <FaUser className={styles.icono}/>
-                </a>    
+        <abbr title="Facebook">
+          <a href="https://www.facebook.com/ChristoTech96/" onClick={handleOpenExternal('https://www.facebook.com/ChristoTech96/')}>
+            <FaFacebook className={styles.icono} />
+          </a>
         </abbr>
 
+        <abbr title="Tiktok">
+          <a href="https://www.tiktok.com/@christotech96" onClick={handleOpenExternal('https://www.tiktok.com/@christotech96')}>
+            <FaTiktok className={styles.icono} />
+          </a>
+        </abbr>
+
+        <abbr title="Mi página Web">
+          <a href="https://personal-portfolio-ten-flame.vercel.app/" onClick={handleOpenExternal('https://personal-portfolio-ten-flame.vercel.app/')}>
+            <FaUser className={styles.icono} />
+          </a>
+        </abbr>
 
       </div>
       
