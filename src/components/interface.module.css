@@ -65,6 +65,22 @@ h1 {
   transition: border-color 0.3s;
 }
 
+.socialNet{
+  
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+
+.icono {
+  font-size: 24px;
+  color: #E7542A;
+}
+
+
 .inputGroup {
   display: flex;
   flex-direction: row;

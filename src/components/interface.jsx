@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import styles from "./interface.module.css";
-import { FaPaste,FaDownload,FaRegFolderOpen  } from "react-icons/fa6";
+import { FaPaste,FaDownload,FaRegFolderOpen, FaFacebook, FaTiktok, FaInstagram, FaPaypal, FaUser  } from "react-icons/fa6";
+import { TbProgressDown } from "react-icons/tb";
+import { FaYoutube } from "react-icons/fa";
+
+
 
 
 
@@ -103,6 +107,34 @@ function Interface() {
       <h1>Free <span className={styles.span1}>Tube</span>  <span className={styles.span2}> by ChristoTech</span> </h1>
 
       </div>
+
+      <div className={styles.socialNet}>
+
+      <abbr title="YouTube">        <a href="https://www.youtube.com/@christotech96" target="_blank">
+          <FaYoutube className={styles.icono} />
+        </a></abbr>
+
+
+        <abbr title="Facebook">        <a  href="https://www.facebook.com/ChristoTech96/" target="_blank">
+                  <FaFacebook className={styles.icono}/>
+                </a></abbr>
+
+        <abbr title="Tiktok">        <a href="https://www.tiktok.com/@christotech96" target="_blank">
+                  <FaTiktok className={styles.icono}/>
+                </a></abbr>
+
+          <abbr title="Instagram">  <a href="https://www.instagram.com/christotech96/" target="_blank">
+                  <FaInstagram className={styles.icono}/>
+                </a>    
+        </abbr>
+
+        <abbr title="Mi página Web">  <a href="https://personal-portfolio-ten-flame.vercel.app/" target="_blank">
+                  <FaUser className={styles.icono}/>
+                </a>    
+        </abbr>
+
+
+      </div>
       
       
       <div className={styles.inputGroup}>
@@ -136,7 +168,11 @@ function Interface() {
           disabled={isDownloading || !url.trim()}
           className={isDownloading ? styles.downloading : ''}
         >
-          {isDownloading ? 'Descargando...' : (
+          {isDownloading ? (
+            <>
+            Descargando <TbProgressDown />
+            </>
+          ) : (
             <>
               Descargar <FaDownload />
             </>
