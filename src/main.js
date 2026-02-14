@@ -58,6 +58,55 @@ ipcMain.on('open-external-url', (event, url) => {
 //   });
 // });
 
+// Función para obtener metadatos del video
+const getVideoInfo = (url) => {
+  return new Promise((resolve, reject) => {
+    const { spawn } = require('child_process');
+    
+    const infoProcess = spawn('yt-dlp', [
+      '--no-playlist',
+      '--dump-json',
+      '--no-download',
+      url
+    ]);
+    
+    let dataString = '';
+    
+    infoProcess.stdout.on('data', (data) => {
+      dataString += data.toString();
+    });
+    
+    infoProcess.stderr.on('data', (data) => {
+      console.error('Error obteniendo info:', data.toString());
+    });
+    
+    infoProcess.on('close', (code) => {
+      if (code === 0) {
+        try {
+          const videoData = JSON.parse(dataString);
+          const videoInfo = {
+            title: videoData.title || 'Video sin título',
+            thumbnail: videoData.thumbnail || '',
+            url: url,
+            duration: videoData.duration || 0,
+            uploader: videoData.uploader || 'Desconocido'
+          };
+          resolve(videoInfo);
+        } catch (err) {
+          console.error('Error parseando JSON:', err);
+          reject(err);
+        }
+      } else {
+        reject(new Error(`Código de salida: ${code}`));
+      }
+    });
+    
+    infoProcess.on('error', (err) => {
+      reject(err);
+    });
+  });
+};
+
 ipcMain.on('download-video', (event, { url, quality }) => {
   console.log('Recibida solicitud de descarga:');
   console.log('URL:', url);
@@ -178,10 +227,22 @@ ipcMain.on('download-video', (event, { url, quality }) => {
     console.log(`Proceso finalizado con código ${code}`);
     
     if (code === 0) {
-      event.reply('download-status', {
-        success: true,
-        progress: 100,
-        message: '✅ Descarga completada correctamente'
+      // Obtener metadatos del video para el historial
+      getVideoInfo(url).then(videoInfo => {
+        event.reply('download-status', {
+          success: true,
+          progress: 100,
+          message: '✅ Descarga completada correctamente',
+          videoInfo: videoInfo
+        });
+      }).catch(err => {
+        console.log('Error obteniendo metadatos:', err);
+        // Enviar respuesta sin metadatos si falla
+        event.reply('download-status', {
+          success: true,
+          progress: 100,
+          message: '✅ Descarga completada correctamente'
+        });
       });
     } else {
       event.reply('download-status', {

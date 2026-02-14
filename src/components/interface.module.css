@@ -13,6 +13,7 @@
 }
 
 .heads {
+ 
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -28,11 +29,11 @@
   
 }
 .logo {
-width: 100px;
+width: 70px;
 height: auto;
 /* background-color: #0E1623; */
 border-radius: 20px;
-padding: 1.2rem;
+padding: 1rem;
 
 }
 
@@ -243,6 +244,123 @@ button.downloading {
   background-color: #ffebee;
   color: #d32f2f;
   border-left: 4px solid #f44336;
+}
+
+.history {
+    
+  padding: 20px;
+  background-color: #489ABB;
+  /* background: linear-gradient(135deg, #489ABB 0%, #764ba2 100%); */
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.historyTitle {
+  
+  margin: 0 0 20px 0;
+  color: white;
+  text-align: center;
+  /* margin-bottom: 20px; */
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.carouselContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  position: relative;
+}
+
+.carouselButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+}
+
+.carouselButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.carouselButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.carouselContent {
+  
+  display: flex;
+  gap: 30px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.videoCard {
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 0;
+  transition: transform 0.3s ease;
+}
+
+.videoCard:hover {
+  transform: translateY(-5px);
+}
+
+.videoThumbnail {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  background: #06a313;
+}
+
+.videoThumbnailPlaceholder {
+  width: 100%;
+  height: 120px;
+  background: #313131;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #ffffff;
+}
+
+.videoInfo {
+  padding: 15px;
+}
+
+.videoTitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.videoDetails {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* Responsive */

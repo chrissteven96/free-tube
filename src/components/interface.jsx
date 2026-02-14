@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styles from "./interface.module.css";
-import { FaPaste,FaDownload,FaRegFolderOpen, FaFacebook, FaTiktok, FaUser  } from "react-icons/fa6";
+import { FaPaste,FaDownload,FaRegFolderOpen, FaFacebook, FaTiktok, FaUser, FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { TbProgressDown } from "react-icons/tb";
 import { FaCheckCircle, FaYoutube, FaClock } from "react-icons/fa";
 
@@ -15,6 +15,8 @@ function Interface() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [quality, setQuality] = useState("best");
   const [downloadOpen, setDownloadOpen] = useState(false);
+  const [videoHistory, setVideoHistory] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // Configurar el listener una sola vez al montar el componente
   useEffect(() => {
@@ -30,6 +32,15 @@ function Interface() {
         if (data.success) {
           setStatus('✅ Descarga completada correctamente');
           setProgress(100);
+          
+          // Agregar al historial - usar información del backend si está disponible
+          if (data.videoInfo) {
+            console.log('Usando videoInfo del backend:', data.videoInfo);
+            addToHistory(data.videoInfo);
+          } else if (url) {
+            console.log('Extrayendo información desde URL:', url);
+            addToHistoryFromUrl(url);
+          }
         } else {
           setStatus('❌ Error en la descarga. Intenta de nuevo.');
         }
@@ -108,6 +119,54 @@ function Interface() {
       console.error('Error al abrir la carpeta:', error);
       setStatus('❌ No se pudo abrir la carpeta de descargas');
     }
+  };
+
+  const addToHistory = (videoInfo) => {
+    const newVideo = {
+      id: Date.now(),
+      title: videoInfo.title || 'Video sin título',
+      thumbnail: videoInfo.thumbnail || '',
+      url: videoInfo.url || url,
+      quality: quality,
+      downloadDate: new Date().toLocaleString()
+    };
+    
+    setVideoHistory(prev => [newVideo, ...prev].slice(0, 20)); // Mantener máximo 20 videos
+  };
+
+  const addToHistoryFromUrl = (videoUrl) => {
+    console.log('Agregando al historial desde URL:', videoUrl);
+    
+    // Extraer ID del video de YouTube
+    const videoIdMatch = videoUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+    const videoId = videoIdMatch ? videoIdMatch[1] : '';
+    
+    console.log('Video ID extraído:', videoId);
+    
+    const newVideo = {
+      id: Date.now(),
+      title: `Video de YouTube - ${videoId}`,
+      thumbnail: videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : '',
+      url: videoUrl,
+      quality: quality,
+      downloadDate: new Date().toLocaleString()
+    };
+    
+    console.log('Nuevo video para historial:', newVideo);
+    
+    setVideoHistory(prev => {
+      const updated = [newVideo, ...prev].slice(0, 20);
+      console.log('Historial actualizado:', updated);
+      return updated;
+    });
+  };
+
+  const handlePrevVideo = () => {
+    setCurrentIndex(prev => Math.max(0, prev - 1));
+  };
+
+  const handleNextVideo = () => {
+    setCurrentIndex(prev => Math.min(videoHistory.length - 1, prev + 1));
   };
 
   return (
@@ -223,7 +282,61 @@ function Interface() {
           )}
         </p>
       )}
+
+      {videoHistory.length > 0 && (
+        <div className={styles.history}>
+          <h3 className={styles.historyTitle}>Historial de Descargas</h3>
+          <div className={styles.carouselContainer}>
+            <button 
+              className={styles.carouselButton}
+              onClick={handlePrevVideo}
+              disabled={currentIndex === 0}
+            >
+              <FaChevronLeft />
+            </button>
+            
+            <div className={styles.carouselContent}>
+              {videoHistory.slice(currentIndex, currentIndex + 2).map((video, index) => (
+                <div key={video.id} className={styles.videoCard}>
+                  {video.thumbnail ? (
+                    <img 
+                      src={video.thumbnail} 
+                      alt={video.title}
+                      className={styles.videoThumbnail}
+                    />
+                  ) : (
+                    <div className={styles.videoThumbnailPlaceholder}>
+                      <FaYoutube />
+                    </div>
+                  )}
+                  <div className={styles.videoInfo}>
+                    <h4 className={styles.videoTitle}>{video.title}</h4>
+                    {/* <p className={styles.videoDetails}>
+                      Calidad: {video.quality} | {video.downloadDate}
+                    </p> */}
+                    <p className={styles.videoDetails}>
+                     Fecha: {video.downloadDate}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <button 
+              className={styles.carouselButton}
+              onClick={handleNextVideo}
+              disabled={currentIndex >= videoHistory.length - 2}
+            >
+              <FaChevronRight />
+            </button>
+          </div>
+        </div>
+      )}
+
+
     </div>
+
+
   );
 }
 
