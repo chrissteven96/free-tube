@@ -3,7 +3,7 @@
   <h1>📺 freeTube</h1>
   <p><b>Aplicación de escritorio moderna, rápida y ligera para la gestión y descarga de contenido de video y audio.</b></p>
 
-  [![GitHub release](https://img.shields.io/github/v/release/chrissteven96/free-tube?style=for-the-badge&color=blue)](https://github.com/chrissteven96/free-tube/releases/latest)
+  [![GitHub release](https://img.shields.io/github/v/release/chrissteven96/free-tube?style=for-the-badge&color=blue)]([https://github.com/chrissteven96/free-tube/releases/latest](https://github.com/chrissteven96/free-tube/releases/tag/v1.0.0))
   [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
   [![Electron](https://img.shields.io/badge/Electron-4B8BBE?style=for-the-badge&logo=electron&logoColor=white)](https://www.electronjs.org/)
   [![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
@@ -11,7 +11,7 @@
 
   <br />
 
-  <a href="https://github.com/chrissteven96/free-tube/releases/latest">
+  <a href="[https://github.com/chrissteven96/free-tube/releases/latest](https://github.com/chrissteven96/free-tube/releases/tag/v1.0.0)">
     <img src="https://img.shields.io/badge/⬇️_DESCARGAR_PARA_WINDOWS-0078D4?style=for-the-badge&logo=windows&logoColor=white" alt="Descargar para Windows" height="40"/>
   </a>
 
@@ -40,7 +40,7 @@
 
 ## 🚀 Instalación y Uso
 
-1. Ve a la sección de **[Releases](https://github.com/chrissteven96/free-tube/releases/latest)**.
+1. Ve a la sección de **[Releases]([https://github.com/chrissteven96/free-tube/releases/latest](https://github.com/chrissteven96/free-tube/releases/tag/v1.0.0))**.
 2. Descarga el archivo ejecutable `freeTube-by-ChristoTech.exe`.
 3. Ejecuta el instalador y abre la aplicación.
 4. ¡Pega la URL de tu video o audio preferido y comienza la descarga!
